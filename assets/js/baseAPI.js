@@ -5,4 +5,20 @@ $.ajaxPrefilter(function (option) {
   // option.url = 'http://ajax.frontend.itheima.net' + option.url
   option.url = 'http://127.0.0.1:3010' + option.url
   // http://127.0.0.1:3010
+
+  if (option.url.includes('/my/')) {
+    // option.headers = { Authorization: localStorage.getItem('token') || '' }
+    option.beforeSend = function (xhr) {
+      xhr.setRequestHeader('Authorization', localStorage.getItem('token') || '')
+    }
+  }
+
+  // 控制用户的访问权限
+  option.complete = function (res) {
+    const { status, msg } = res.responseJSON
+    if (status === 1 && msg === '身份认证失败') {
+      localStorage.removeItem('token')
+      location.href = '/my01/breakingnews/login.html'
+    }
+  }
 })

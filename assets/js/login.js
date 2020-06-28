@@ -49,7 +49,7 @@ $(function () {
         if (res.status !== 0) return layer.msg(res.msg)
         layer.msg(res.msg)
         localStorage.setItem('token', res.token)
-        location.href = '/index.html'
+        location.href = '/my01/breakingnews/index.html'
       }
     })
   })
