@@ -1,34 +1,40 @@
-$(function() {
-  var form = layui.form
-
-  form.verify({
-    pwd: [/^[\S]{6,12}$/, '密码必须6到12位，且不能出现空格'],
-    samePwd: function(value) {
-      if (value === $('[name=oldPwd]').val()) {
-        return '新旧密码不能相同！'
-      }
-    },
-    rePwd: function(value) {
-      if (value !== $('[name=newPwd]').val()) {
-        return '两次密码不一致！'
-      }
-    }
-  })
-
-  $('.layui-form').on('submit', function(e) {
-    e.preventDefault()
-    $.ajax({
-      method: 'POST',
-      url: '/my/updatepwd',
-      data: $(this).serialize(),
-      success: function(res) {
-        if (res.status !== 0) {
-          return layui.layer.msg('更新密码失败！')
+$(function () {
+    const form = layui.form
+    const layer = layui.layer
+    form.verify({
+        pwd: [/^[\S]{6,12}$/, '密码必须6到12位，且不能出现空格'],
+        samepwd: function (value) {
+            const oldpwd = $('[name="oldPwd"]').val()
+            if (value === oldpwd) {
+                return '新密码不能一致'
+            }
+        },
+        repwd: function (value) {
+            const newpwd = $('[name="newPwd"]').val()
+            if (value !== newpwd) {
+                return '确认密码必须一致'
+            }
         }
-        layui.layer.msg('更新密码成功！')
-        // 重置表单
-        $('.layui-form')[0].reset()
-      }
     })
-  })
+
+    // 给表单注册submit事件
+    $('#pwdform').on('submit', function (e) {
+        e.preventDefault()
+        const inputvals = form.val('pwdform')
+        // 自己的接口不接受repwd的值,用delete删除
+        delete inputvals.rePwd
+        $.ajax({
+            method: 'POST',
+            url: '/my/updatepwd',
+            data: inputvals,
+            success: function (res) {
+                if (res.status !== 0) {
+                    return layer.msg('更新密码失败')
+                }
+                layer.msg('更新密码成功')
+                $('[type="reset"]').click()
+            }
+        })
+    })
+
 })
