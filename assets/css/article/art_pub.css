@@ -37,3 +37,7 @@ body {
   margin-bottom: 20px;
   overflow: hidden;
 }
+
+#file {
+  display: none;
+}
