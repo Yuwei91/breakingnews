@@ -5,6 +5,9 @@ $(function () {
 
   let ARTSTATE = '已发布'
 
+  // 进行判断是否有artId值 
+  const artId = localStorage.getItem('artId')
+
   // 初始化下拉菜单文章类别数据
   initArtCate()
   initEditor()
@@ -45,17 +48,19 @@ $(function () {
   })
 
   // 为表单注册submit事件
-  $('#pubform').submit(function (e) {
+  $('#pubform').on('submit', function (e) {
     e.preventDefault()
     // titlt + cata_id + content
     let fd = new FormData($('#pubform')[0])
     fd.append('state', ARTSTATE)
+    $image.crossOrigin = 'Anonymous';
     $image
       .cropper('getCroppedCanvas', { // 创建一个 Canvas 画布
         width: 400,
         height: 280
       })
-      .toBlob(function (blob) {       // 将 Canvas 画布上的内容，转化为文件对象
+      .toBlob(function (blob) {
+        // 将 Canvas 画布上的内容，转化为文件对象
         // 得到文件对象后，进行后续的操作
         fd.append('cover_img', blob)
         pubArticle(fd)
@@ -80,20 +85,44 @@ $(function () {
   }
 
   function pubArticle(fd) {
+    if (artId) {
+      fd.append('Id', artId)
+    }
     $.ajax({
       type: 'post',
-      url: '/my/article/add',
+      url: artId ? '/my/article/edit' : '/my/article/add',
       data: fd,
       contentType: false,
       processData: false,
       success: function (res) {
         if (res.status !== 0) {
-          return layer.msg(res.message)
+          return layer.msg(res.msg)
         }
-        layer.msg(res.message)
-        location.href = '/my01/breakingnews/article/art_list.html'
+        layer.msg(res.msg)
+        location.href = './art_list.html'
+        //  /my01/breakingnews/article
       }
     })
+
+  }
+
+  // 在文章列表点击编辑后 跳转到 发布文章页面 
+  // 根据文章id获取文章信息
+  isartId()
+
+  function isartId() {
+    if (artId) {
+      $.ajax({
+        type: 'get',
+        url: '/my/article/' + artId,
+        success: function (res) {
+          // console.log(res)
+          // layui 内置快速为表单赋值
+          form.val('pubform', res.data)
+          localStorage.removeItem('artId')
+        }
+      })
+    }
   }
 
 })

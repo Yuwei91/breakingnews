@@ -16,10 +16,10 @@
             <!-- 选项区域 -->
             <form class="layui-form" id="searchform">
                 <div class="layui-form-item layui-inline">
-                    <select name="cate_id" lay-verify="required"></select>
+                    <select name="cate_id"></select>
                 </div>
                 <div class="layui-form-item layui-inline">
-                    <select name="state" lay-verify="required">
+                    <select name="state">
                         <option value="">所有状态</option>
                         <option value="已发布">已发布</option>
                         <option value="草稿">草稿</option>
@@ -63,8 +63,8 @@
             <td>{{$value.pub_date|dataFormat}}</td>
             <td>{{$value.state}}</td>
             <td>
-                <button type="button" class="layui-btn layui-btn-xs">编辑</button>
-                <button type="button" class="layui-btn layui-btn-danger layui-btn-xs">删除</button>
+                <button type="button" data-id={{$value.Id}} class="layui-btn layui-btn-xs btnEdit">编辑</button>
+                <button type="button" data-id={{$value.Id}} class="layui-btn layui-btn-danger layui-btn-xs btnDel">删除</button>
             </td>
         </tr>
         {{/each}}

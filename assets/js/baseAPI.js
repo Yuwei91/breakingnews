@@ -15,10 +15,13 @@ $.ajaxPrefilter(function (option) {
 
   // 控制用户的访问权限
   option.complete = function (res) {
+    console.log(res)
     const { status, msg } = res.responseJSON
+    // const { status, msg } = res.responseText  
     if (status === 1 && msg === '身份认证失败') {
       localStorage.removeItem('token')
-      location.href = '/my01/breakingnews/login.html'
+      location.href = './login.html'
+      //  /my01/breakingnews
     }
   }
 })

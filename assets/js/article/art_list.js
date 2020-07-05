@@ -22,10 +22,10 @@ $(function () {
   }
 
   const q = {
-    pagenum : 1,
-    pagesize : 2,
-    cate_id : '',
-    state : ''
+    pagenum: 1,
+    pagesize: 2,
+    cate_id: '',
+    state: ''
   }
 
   // 初始化文章列表
@@ -47,6 +47,8 @@ $(function () {
         const htmlstr = template('tpl-list', res)
         $('tbody').html(htmlstr)
         // form.render()
+        // 渲染分页
+        initpage(res.total)
       }
     })
   }
@@ -73,6 +75,57 @@ $(function () {
     q.cate_id = cate_id
     q.state = state
     initArtList()
+  })
+
+  function initpage(total) {
+    laypage.render({
+      elem: 'pagebox',
+      count: total,
+      limit: q.pagesize,
+      curr: q.pagenum,
+      limits: [2, 3, 5, 10],
+      layout: ['count', 'limit', 'prev', 'page', 'next', 'skip'],
+      jump: function (obj, first) {
+        // console.log(obj) obj包含当前分页所有信息
+        q.pagesize = obj.limit
+        q.pagenum = obj.curr
+        if (!first) {
+          initArtList()
+        }
+      }
+    })
+  }
+
+  // 给删除按钮绑定点击事件
+  $('tbody').on('click', '.btnDel', function () {
+    const len = $('.btnDel').length
+    const Id = $(this).data('id')
+    layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+      //do something
+      $.ajax({
+        type: 'get',
+        url: '/my/article/delete/' + Id,
+        success: function (res) {
+          // console.log(res)
+          if (res.status !== 0) {
+            return layer.msg(res.msg)
+          }
+          layer.msg(res.msg)
+          if (len === 1) {
+            q.pagenum = q.pagenum === 1 ? 1 : (q.pagenum - 1)
+          }
+          initArtList()
+        }
+      })
+      layer.close(index);
+    })
+  })
+
+  // 给编辑按钮注册点击事件
+  $('tbody').on('click', '.btnEdit', function () {
+    const artId = $(this).data('id') 
+    localStorage.setItem('artId', artId)
+    location.href = './art_pub.html'
   })
 
 })
