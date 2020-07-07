@@ -36,6 +36,7 @@ $(function () {
       return
     }
     const newImgURL = URL.createObjectURL(files[0])
+    debugger
     $image
       .cropper('destroy')      // 销毁旧的裁剪区域
       .attr('src', newImgURL)  // 重新设置图片路径
@@ -53,7 +54,7 @@ $(function () {
     // titlt + cata_id + content
     let fd = new FormData($('#pubform')[0])
     fd.append('state', ARTSTATE)
-    $image.crossOrigin = 'Anonymous';
+    // $image.crossOrigin = 'Anonymous';
     $image
       .cropper('getCroppedCanvas', { // 创建一个 Canvas 画布
         width: 400,
@@ -99,7 +100,9 @@ $(function () {
           return layer.msg(res.msg)
         }
         layer.msg(res.msg)
+        // location.href = './art_list.html'
         location.href = './art_list.html'
+        // window.parent
         //  /my01/breakingnews/article
       }
     })

@@ -20,7 +20,7 @@ $.ajaxPrefilter(function (option) {
     // const { status, msg } = res.responseText  
     if (status === 1 && msg === '身份认证失败') {
       localStorage.removeItem('token')
-      location.href = './login.html'
+      location.href = '/login.html'
       //  /my01/breakingnews
     }
   }
